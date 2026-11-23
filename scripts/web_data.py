@@ -79,6 +79,23 @@ data = {
         "hollows_near_pct": 0,
     },
 }
+# wards (MDB 2020): residents on low-lying land, GHS-POP 2020
+WARDS = os.path.join(EXP, "wards2020_gp.geojson")
+if os.path.exists(WARDS):
+    st = json.load(open(os.path.join(WORK, "_wards.json")))
+    short = lambda m: next((n for n in ["Johannesburg", "Tshwane", "Ekurhuleni", "Emfuleni", "Lesedi", "Merafong City", "Midvaal", "Mogale City", "Rand West City"] if n in m), m)
+    wd = json.load(open(WARDS))
+    for f in wd["features"]:
+        w = st[f["properties"]["WardID"]]
+        f["properties"] = {"id": f["properties"]["WardID"], "no": w["no"], "mun": short(w["mun"]), "pop": w["pop"], "low": w["pop_low"], "hi": w["pop_hi"],
+                           "s": round(100 * w["pop_low"] / w["pop"], 1) if w["pop"] >= 500 else None}
+    json.dump(wd, open(os.path.join(OUT, "wards.geojson"), "w"), separators=(",", ":"))
+    shares = [f["properties"]["s"] for f in wd["features"] if f["properties"]["s"] is not None]
+    data_wards = {"n": len(wd["features"]), "over20": sum(1 for v in shares if v > 20), "over10": sum(1 for v in shares if v > 10)}
+    print("wards", data_wards)
+else:
+    data_wards = None
+data["wards"] = data_wards
 if RAIN and os.path.exists(RAIN):
     data["rain"] = json.load(open(RAIN))
 json.dump(data, open(os.path.join(OUT, "data.json"), "w"), separators=(",", ":"))

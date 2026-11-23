@@ -16,6 +16,7 @@
 | Built-up land on it, 1975 → 2020 | 60 → 147 km² (×2.4) | 10 → 28 km² |
 | All built-up land, 1975 → 2020 | ×2.0 | |
 | Residents on it (GHS-POP 2020) | about 892,000 (5.8%) | about 250,000 (4.3%) |
+| Wards where more than a fifth of residents live on it (2020 wards) | 62 of 529 | |
 | Buildings on it | | 68,092 (30,198 in the lowest class) |
 | Roads on it | | 884 km |
 | Schools / clinics and hospitals on it (OpenStreetMap) | | 27 / 9 |
@@ -37,7 +38,7 @@ scripts/analysis.py       growth onto low ground (GHSL, from urban-edge-za), peo
 scripts/web_rain.py       rain behind each reported flood, Johannesburg average, ranked against wet-season days since 1998
 scripts/web_tiles.py      PMTiles: terrarium terrain from FABDEM, and styled raster tiles for the low-lying classes and JRC
 scripts/web_vectors.py    PMTiles: vector tiles of growth on low ground and of exposed buildings with estimated heights
-scripts/web_data.py       the small JSON and GeoJSON files the page reads
+scripts/web_data.py       the small JSON and GeoJSON files the page reads, including residents on low-lying land per 2020 ward
 data/incidents_raw.csv    54 reported flood places, 2016-2026, with sources; incidents.geojson is the geocoded version
 ```
 
@@ -54,6 +55,7 @@ Run `acquire_data.py`, `hazard.py` and `analysis.py` in the QGIS Python console,
 - **Flat plains.** On the plains of Merafong, Midvaal and the Vaal, a few metres above the stream covers wide ground, so their low-lying shares are high.
 - **Reports are uneven.** Floods in places the media covers are more likely to be reported. Many places are geocoded to a suburb centre, not the flooded street.
 - **Buildings.** Footprints come from Overture Maps (mostly Google and Microsoft footprints, plus OpenStreetMap). The 3D heights are GHSL's average building height per hectare. Facility counts depend on how complete OpenStreetMap is.
+- **Exposure, not vulnerability.** The ward map counts who lives on low-lying land. It does not yet weigh how well people can cope; Census 2022 ward tables (housing, services, age) would add that.
 - **Rain.** CHIRPS blends satellite and gauge rain at about 5 km; a thunderstorm cell can be smaller. November 2026 values are preliminary.
 
 ## Data
@@ -64,7 +66,7 @@ Run `acquire_data.py`, `hazard.py` and `analysis.py` in the QGIS Python console,
 - GHS-BUILT-S, GHS-POP and GHS-BUILT-H R2023A, European Commission, Joint Research Centre.
 - Overture Maps Foundation buildings, release 2026-11-18. © OpenStreetMap contributors.
 - Flood reports from SAnews, the City of Johannesburg, TimesLIVE, SowetanLIVE, News24, Daily Maverick, EWN, The Citizen, SABC, GroundUp, Al Jazeera and IFRC; every place links to its source in `data/incidents_raw.csv`.
-- Municipal Demarcation Board boundaries, via geoBoundaries.
+- Municipal Demarcation Board ward boundaries (2020) and municipal boundaries (via geoBoundaries).
 
 Apart from the flood reports, the data isn't in this repository; the scripts download it.
 

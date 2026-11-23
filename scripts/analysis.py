@@ -166,5 +166,26 @@ def check():
     print('places within ~500 m of a ponding hollow:', int(near(hol.astype(np.uint8), P, 17).sum()))
 
 
+def wards(shp):
+    """Residents on low-lying land per 2020 ward (MDB_Wards_2020.shp), written to data/work/_wards.json and data/export."""
+    gp = os.path.join(W, 'wards2020_gp_utm.gpkg')
+    gdal.VectorTranslate(gp, shp, format='GPKG', where="Province = 'Gauteng'", dstSRS='EPSG:32735', reproject=True, layerName='wards', accessMode='overwrite', makeValid=True)
+    sl = ogr.Open(gp).GetLayer(); n = sl.GetFeatureCount()
+    mem = ogr.GetDriverByName('Memory').CreateDataSource('m'); ml = mem.CreateLayer('m', sl.GetSpatialRef(), ogr.wkbMultiPolygon)
+    ml.CreateField(ogr.FieldDefn('k', ogr.OFTInteger)); meta = []
+    for i, f in enumerate(sl):
+        g = ogr.Feature(ml.GetLayerDefn()); g.SetField('k', i + 1); g.SetGeometry(f.GetGeometryRef().Clone()); ml.CreateFeature(g)
+        meta.append((f.GetField('WardID'), f.GetField('WardNo'), f.GetField('Municipali'), f.GetField('CAT_B')))
+    ds = gdal.GetDriverByName('MEM').Create('', NC, NR, 1, gdal.GDT_UInt16); ds.SetGeoTransform(GT); ds.SetProjection(ref.GetProjection())
+    gdal.RasterizeLayer(ds, [1], ml, options=['ATTRIBUTE=k']); ward = ds.ReadAsArray().ravel()
+    cls = read('lowlying_class.tif').ravel(); pop = (np.clip(read('pop_2020_30.tif').astype(np.float64), 0, None) * 0.09).ravel()
+    tot, low, hi = (np.bincount(ward, weights=w, minlength=n + 1) for w in (pop, pop * (cls >= 1), pop * (cls == 2)))
+    json.dump({wid: {'no': no, 'mun': mun, 'cat': cat, 'pop': round(tot[i + 1]), 'pop_low': round(low[i + 1]), 'pop_hi': round(hi[i + 1])}
+               for i, (wid, no, mun, cat) in enumerate(meta)}, open(os.path.join(W, '_wards.json'), 'w'))
+    gdal.VectorTranslate(os.path.join(E, 'wards2020_gp.geojson'), gp, format='GeoJSON', dstSRS='EPSG:4326', reproject=True, simplifyTolerance=25,
+                         selectFields=['WardID', 'WardNo', 'Municipali'], layerCreationOptions=['COORDINATE_PRECISION=5', 'RFC7946=YES'])
+
+
 if __name__ == '__console__' or __name__ == '__main__':
     growth(); exposure(); buildings(); check()
+    wards(os.path.expanduser(r'~/Downloads/Random Files/MDB_Wards_2020_-5148050534900295426/MDB_Wards_2020.shp'))
