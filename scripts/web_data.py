@@ -1,4 +1,4 @@
-"""Assemble the small JSON/GeoJSON files the FLOOD-LINE ZA page reads.
+"""Assemble the small JSON/GeoJSON files that the FLOOD-LINE ZA page reads.
 
 Usage: python web_data.py <work_dir> <export_dir> <incidents.geojson> <municipalities.geojson> <out_dir> [rain.json]
 """
