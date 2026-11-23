@@ -4,7 +4,10 @@ For each event: the Johannesburg-average daily rain from 21 days before to 7 day
 within a day of the report, the wettest three days ending within a day of it, and how that wettest day
 ranks among all rainy-season days (October to April) in the record.
 
-Usage: python web_rain.py <chirps.npz> <municipalities.geojson> <data.json> <out rain.json>
+Usage: python web_rain.py <chirps.npz> <municipalities.geojson> <data.json> <out rain.json> [gee.csv]
+
+gee.csv (optional) is the same Johannesburg average from Earth Engine (UCSB-CHC/CHIRPS/V3/DAILY_SAT,
+gee/chirps3_jhb_daily.js); where it has a day, it is used, and the downloaded cube fills the days after it.
 """
 import datetime, json, sys
 import numpy as np
@@ -13,6 +16,7 @@ from rasterio.transform import from_origin
 from shapely.geometry import shape
 
 NPZ, MUN, DATA, OUT = sys.argv[1:5]
+GEE = sys.argv[5] if len(sys.argv) > 5 else None
 z = np.load(NPZ)
 rain = z['rain']; x0 = float(z['x0']); y0 = float(z['y0']); res = float(z['res'])
 start = datetime.date.fromisoformat(str(z['start']))
@@ -25,6 +29,13 @@ jmean = np.nanmean(rain[:, mask], axis=1)          # Johannesburg average, mm a 
 have = ~np.isnan(rain[:, mask]).all(axis=1)
 jmean[~have] = np.nan
 dates = [start + datetime.timedelta(i) for i in range(n)]
+if GEE:
+    import csv
+    g = {r['date']: float(r['mm']) for r in csv.DictReader(open(GEE)) if r['mm']}
+    for i, d in enumerate(dates):
+        if d.isoformat() in g:
+            jmean[i] = g[d.isoformat()]; have[i] = True
+    print('Earth Engine days used:', sum(1 for d in dates if d.isoformat() in g), 'last', max(g))
 season = np.array([d.month in (10, 11, 12, 1, 2, 3, 4) for d in dates])
 base = jmean[season & have]
 

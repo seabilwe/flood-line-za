@@ -24,7 +24,8 @@
 - **Low ground was long avoided.** In 1975, only 5% of Gauteng's built-up land was low-lying, compared with 12% of all land. 7.1% of the land built up since then is low-lying, so building on low ground has grown faster than building overall.
 - **Buildings on the lowest ground are smaller.** In Johannesburg the median footprint there is 36 m², against 45 m² across the city.
 - **Reported floods fall near the map's lowest class.** 70% of the better-located reports lie within 500 m of it, against 35% of built-up Johannesburg. Reports also cluster along the larger streams (the Jukskei and the Klipspruit): 57% of the better-located reports are within 1 km of a stream draining 50 km² or more, against 16% of built-up Johannesburg.
-- **The global river model misses most of it. Only 6 of the 54 reported places are within 500 m of the JRC 1-in-100-year flood zone, and some are next to dams.
+- **Big storms, and storms too local to register.** 6 of the 13 floods came on a day wetter than about 94% of wet-season days since 1998 (Johannesburg average, CHIRPS v3). On 3 December 2022, when the Jukskei swept people away at a baptism, the city averaged only 3 mm: whatever rain caused it was too local for a city-wide average to register.
+- **The global river model misses most of it.** Only 6 of the 54 reported places are within 500 m of the JRC 1-in-100-year flood zone, and some are next to dams.
 
 ## How it works
 
@@ -36,6 +37,7 @@ scripts/hazard.py         30 m DEM in UTM 35S; GRASS r.watershed; height above t
 scripts/analysis.py       growth onto low ground (GHSL, from urban-edge-za), people, roads, schools, clinics and buildings on it,
                           and the check against reported floods
 scripts/web_rain.py       rain behind each reported flood, Johannesburg average, ranked against wet-season days since 1998
+scripts/gee/chirps3_jhb_daily.js  the same Johannesburg average from Earth Engine (used when the CHC server rate-limits downloads)
 scripts/web_tiles.py      PMTiles: terrarium terrain from FABDEM, and styled raster tiles for the low-lying classes and JRC
 scripts/web_vectors.py    PMTiles: vector tiles of growth on low ground and of exposed buildings with estimated heights
 scripts/web_data.py       the small JSON and GeoJSON files the page reads, including residents on low-lying land per 2020 ward
@@ -62,7 +64,7 @@ Run `acquire_data.py`, `hazard.py` and `analysis.py` in the QGIS Python console,
 
 - FABDEM v1-2 (Hawker et al. 2022), University of Bristol, CC BY-NC-SA 4.0.
 - GloFAS global river flood hazard maps v2.1, European Commission, Joint Research Centre.
-- CHIRPS v3 daily, Climate Hazards Centre, UC Santa Barbara.
+- CHIRPS v3 daily (IMERG-timed), Climate Hazards Centre, UC Santa Barbara; through Earth Engine (UCSB-CHC/CHIRPS/V3/DAILY_SAT) to October 2026, and the Centre's preliminary files for November 2026. The two agree to within 0.02 mm a day on average over 6,377 shared days.
 - GHS-BUILT-S, GHS-POP and GHS-BUILT-H R2023A, European Commission, Joint Research Centre.
 - Overture Maps Foundation buildings, release 2026-11-18. © OpenStreetMap contributors.
 - Flood reports from SAnews, the City of Johannesburg, TimesLIVE, SowetanLIVE, News24, Daily Maverick, EWN, The Citizen, SABC, GroundUp, Al Jazeera and IFRC; every place links to its source in `data/incidents_raw.csv`.
