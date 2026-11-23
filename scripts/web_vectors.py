@@ -1,6 +1,6 @@
 """Vector tiles for FLOOD-LINE ZA (mapbox-vector-tile + pmtiles).
 
-growth.pmtiles     built-up land on low-lying ground, by the five-year epoch it was first built (e) and class (c)
+growth.pmtiles:     built-up land on low-lying ground, by the five-year epoch it was first built (e) and class (c)
 buildings.pmtiles  Johannesburg buildings on low-lying ground: class (c) and estimated height (h, GHSL ANBH)
 
 Usage: python web_vectors.py <export_dir> <out_dir>
