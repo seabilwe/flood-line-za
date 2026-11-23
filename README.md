@@ -19,12 +19,12 @@
 | Wards where more than a fifth of residents live on it (2020 wards) | 62 of 529 | |
 | Buildings on it | | 68,092 (30,198 in the lowest class) |
 | Roads on it | | 884 km |
-| Schools / clinics and hospitals on it (OpenStreetMap) | | 27 / 9 |
+| Schools/clinics and hospitals on it (OpenStreetMap) | | 27 / 9 |
 
-- **Low ground was long avoided.** In 1975 only 5% of Gauteng's built-up land was low-lying, against 12% of all land. 7.1% of the land built up since then is, so building on low ground has grown faster than building overall.
+- **Low ground was long avoided.** In 1975, only 5% of Gauteng's built-up land was low-lying, compared with 12% of all land. 7.1% of the land built up since then is low-lying, so building on low ground has grown faster than building overall.
 - **Buildings on the lowest ground are smaller.** In Johannesburg the median footprint there is 36 m², against 45 m² across the city.
 - **Reported floods fall near the map's lowest class.** 70% of the better-located reports lie within 500 m of it, against 35% of built-up Johannesburg. Reports also cluster along the larger streams (the Jukskei and the Klipspruit): 57% of the better-located reports are within 1 km of a stream draining 50 km² or more, against 16% of built-up Johannesburg.
-- **The global river model misses most of it.** Only 6 of the 54 reported places are within 500 m of the JRC 1-in-100-year flood zone, and some of those are next to dams.
+- **The global river model misses most of it. Only 6 of the 54 reported places are within 500 m of the JRC 1-in-100-year flood zone, and some are next to dams.
 
 ## How it works
 
@@ -42,9 +42,9 @@ scripts/web_data.py       the small JSON and GeoJSON files the page reads, inclu
 data/incidents_raw.csv    54 reported flood places, 2016-2026, with sources; incidents.geojson is the geocoded version
 ```
 
-Run `acquire_data.py`, `hazard.py` and `analysis.py` in the QGIS Python console, in that order (QGIS 3.44 with the GRASS provider; DuckDB through `pip install --user duckdb`). The `web_*.py` scripts run in any Python with rasterio, shapely, mercantile, mapbox-vector-tile and pmtiles. `analysis.py` reads the first-built year and population from the companion project [urban-edge-za](https://github.com/seabilwe/urban-edge-za).
+Run `acquire_data.py`, `hazard.py` and `analysis.py` in the QGIS Python console, in that order (QGIS 3.44 with the GRASS provider; DuckDB through `pip install --user duckdb`). The `web_*.py` scripts run in any Python environment with rasterio, shapely, mercantile, mapbox-vector-tile and pmtiles. `analysis.py` reads the first-built year and population from the companion project [urban-edge-za](https://github.com/seabilwe/urban-edge-za).
 
-**The classes.** Streams are cells that at least 1 km² drains through; classes are drawn only along streams draining at least 5 km². Each cell's height above the stream it drains to (HAND) is compared with a depth that grows with the stream's catchment, *h* = A<sup>0.3</sup> m with A in km². This follows hydraulic geometry: depth ∝ Q<sup>0.4</sup> and Q ∝ A<sup>0.75</sup>. *h* is 1.6 m at 5 km² and 4 m at 100 km². The lowest class is HAND ≤ *h*; the low class is HAND ≤ 2*h*. The 5 km² minimum was chosen by testing 1, 5, 10 and 25 km²: with every small gully included (1 km²) reported floods sat no closer to the classes than built-up land in general, and 5 km² was the smallest network that separated them clearly.
+**The classes.** Streams are cells that at least 1 km² drains through; classes are drawn only along streams draining at least 5 km². Each cell's height above the stream it drains to (HAND) is compared with a depth that grows with the stream's catchment, *h* = A<sup>0.3</sup> m, with A in km². This follows hydraulic geometry: depth ∝ Q<sup>0.4</sup> and Q ∝ A<sup>0.75</sup>. *h* is 1.6 m at 5 km² and 4 m at 100 km². The lowest class is HAND ≤ *h*; the low class is HAND ≤ 2*h*. The 5 km² minimum was chosen by testing 1, 5, 10 and 25 km²: with every small gully included (1 km²), reported floods sat no closer to the classes than built-up land in general, and 5 km² was the smallest network that separated them clearly.
 
 **The web page.** It uses plain JavaScript with MapLibre GL and PMTiles, so it needs no server. The 3D view uses the same terrain tiles as the terrain profile, so both show the same ground.
 
@@ -62,13 +62,13 @@ Run `acquire_data.py`, `hazard.py` and `analysis.py` in the QGIS Python console,
 
 - FABDEM v1-2 (Hawker et al. 2022), University of Bristol, CC BY-NC-SA 4.0.
 - GloFAS global river flood hazard maps v2.1, European Commission, Joint Research Centre.
-- CHIRPS v3 daily, Climate Hazards Center, UC Santa Barbara.
+- CHIRPS v3 daily, Climate Hazards Centre, UC Santa Barbara.
 - GHS-BUILT-S, GHS-POP and GHS-BUILT-H R2023A, European Commission, Joint Research Centre.
 - Overture Maps Foundation buildings, release 2026-11-18. © OpenStreetMap contributors.
 - Flood reports from SAnews, the City of Johannesburg, TimesLIVE, SowetanLIVE, News24, Daily Maverick, EWN, The Citizen, SABC, GroundUp, Al Jazeera and IFRC; every place links to its source in `data/incidents_raw.csv`.
 - Municipal Demarcation Board ward boundaries (2020) and municipal boundaries (via geoBoundaries).
 
-Apart from the flood reports, the data isn't in this repository; the scripts download it.
+The flood reports aren't in this repository; the scripts download them.
 
 ## Licence
 
