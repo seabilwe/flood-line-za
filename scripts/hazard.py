@@ -1,4 +1,4 @@
-"""FLOOD-LINE ZA: low-lying land along Gauteng's streams. Run in the QGIS Python console after acquire_data.py.
+"""FLOOD-LINE ZA: low-lying land along Gauteng's streams. Run in the QGIS Python console after running acquire_data.py.
 
 1. FABDEM tiles -> one 30 m DEM in WGS 84 / UTM 35S (EPSG:32735)
 2. GRASS r.watershed (single flow direction) -> flow accumulation and drainage direction
